@@ -2,8 +2,8 @@
 
 # Create your views here.
 
+
 from django.http import JsonResponse
-from django.core.serializers import serialize
 from django.views import View
 from .models import MenuItem
 
@@ -12,8 +12,22 @@ class MenuItemView(View):
         
         menu_items = MenuItem.objects.all()
 
-        
-        data = serialize('json', menu_items, use_natural_primary_keys=True)
+        # Construct a list of dictionaries with related names
+        data = [
+            {
+                'id': item.id,
+                'name': item.name,
+                'description': item.description,
+                'price': item.price,
+                'category': item.category.name, 
+                'available': item.available,
+                'image_url': item.image_url,
+                'allergens': [allergen.name for allergen in item.allergens.all()],  
+                'created_at': item.created_at.isoformat(),
+                'updated_at': item.updated_at.isoformat(),
+            }
+            for item in menu_items
+        ]
 
-        
+       
         return JsonResponse(data, safe=False)
