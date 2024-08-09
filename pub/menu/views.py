@@ -6,9 +6,14 @@
 from django.http import JsonResponse
 from django.views import View
 from .models import MenuItem
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 class MenuItemView(View):
     def get(self, request, *args, **kwargs):
+        logger.info("get request")
         
         menu_items = MenuItem.objects.all()
 
